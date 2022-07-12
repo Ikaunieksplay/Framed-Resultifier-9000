@@ -6,7 +6,7 @@ import asyncio
 from discord.ext import commands, tasks
 from datetime import datetime
 
-os.chdir("I:\\old\\Bots\\framde")
+os.chdir("")#insert your own ( ͡° ͜ʖ ͡°)
 
 client = commands.Bot(command_prefix=">")
 
@@ -86,7 +86,7 @@ async def leaderboard(ctx,x = 10):
 
 @client.command()
 async def clear_stats(ctx):
-    channel = client.get_channel(430333455566503940)
+    channel = client.get_channel()#insert your own ( ͡° ͜ʖ ͡°)
     await channel.send("Week over! Here are the final results for this week!")
     x=10
     users = await get_stats()
@@ -126,7 +126,7 @@ async def clear_stats(ctx):
 @tasks.loop(minutes=60.0)
 async def task(self):
     if datetime.now().day == 0 and datetime.now().hour == 0:
-        channel = client.get_channel(430333455566503940)
+        channel = client.get_channel()#insert your own ( ͡° ͜ʖ ͡°)
         await channel.send("Week over! Here are the final results for this week!")
         x=10
         users = await get_stats()
@@ -187,4 +187,4 @@ async def get_stats():
 
 
 
-client.run("OTk2MTI4MTUxOTMzNTcxMDky.G97kb3.0Hrsf4KZDDg-4OKU6pREq5nX9rCdMDVI0-czy4")
+client.run("youthought.jpg") #insert your own ( ͡° ͜ʖ ͡°)
