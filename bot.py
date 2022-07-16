@@ -10,6 +10,11 @@ os.chdir("")#insert your own ( ͡° ͜ʖ ͡°)
 
 client = commands.Bot(command_prefix=">")
 
+# list of channels bot will react to (copy channel ids and add it)
+# add this to use:
+# if !(message.channel.id in channelIDs)
+#   return
+allowedChannels = [600400648969650186]
 
 @client.event
 async def on_ready():
@@ -17,6 +22,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    if not(message.channel.id in allowedChannels):
+        return
     if "🎥" in message.content:
         notScore=message.content.count("🟥")
         score = 7 - notScore
