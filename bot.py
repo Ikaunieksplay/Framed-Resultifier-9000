@@ -203,7 +203,7 @@ async def load_stats():
 async def save_stats(users):
     """
     Save user stats as JSON file.
-    :param users:
+    :param users: dict of users and info.
     :return:
     """
     # TODO Should be placed into a try/except statement.
