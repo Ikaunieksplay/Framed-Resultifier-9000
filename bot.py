@@ -1,12 +1,11 @@
-import discord
-from discord.ext.commands import Bot
 import json
 import os
 import asyncio
-from discord.ext import commands, tasks
 from datetime import datetime
 
-os.chdir("") # insert your own, full path to folder where bot is ( ͡° ͜ʖ ͡°)
+import discord
+from discord.ext.commands import Bot
+from discord.ext import commands, tasks
 
 intents = discord.Intents.all()
 
@@ -17,9 +16,11 @@ bot = discord.ext.commands.Bot(intents=intents)
 # add this to use:
 # if !(message.channel.id in allowedChannels):
 #   return
-allowedChannels = [430333455566503940]  # Currently Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
+# Currently Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
+allowedChannels = [430333455566503940]
 
-allowedServers = [430333455566503937] # Currently Ikaun's bot testing server, insert your own ( ͡° ͜ʖ ͡°)
+# Currently Ikaun's bot testing server, insert your own ( ͡° ͜ʖ ͡°)
+allowedServers = [430333455566503937]
 
 
 @bot.event
@@ -55,35 +56,37 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-@bot.slash_command(guild_ids = allowedServers, name = "stats", description = "Shows how many points you have")
+@bot.slash_command(guild_ids=allowedServers, name="stats", description="Shows how many points you have")
 async def stats(ctx):
     await join_game(ctx.author)
     user = ctx.author
     users = await load_stats()
-    
+
     points_amt = users[str(user.id)]["points"]
 
-    em = discord.Embed(title=f"{ctx.author.name}'s stats", color=discord.Color(0xF20000))
+    em = discord.Embed(
+        title=f"{ctx.author.name}'s stats", color=discord.Color(0xF20000))
     em.add_field(name="Points this week", value=points_amt)
     await ctx.respond(embed=em)
 
-    
-@bot.slash_command(guild_ids = allowedServers, description = "test command please ignore") #test command please ignore
+
+# test command please ignore
+@bot.slash_command(guild_ids=allowedServers, description="test command please ignore")
 async def beg(ctx):
     await join_game(ctx.author)
     user = ctx.author
     users = await load_stats()
-    
+
     earnings = int(50)
 
     await ctx.respond(f"50 points added!")
 
     users[str(user.id)]["points"] += earnings
-    
+
     await save_stats(users)
 
 
-@bot.slash_command(guild_ids = allowedServers, name = "leaderboard", description = "See the current Top 10 guessers")
+@bot.slash_command(guild_ids=allowedServers, name="leaderboard", description="See the current Top 10 guessers")
 async def leaderboard(ctx, x=10):
     """
     Create leaderboard and create embedded text to display it.
@@ -103,7 +106,8 @@ async def leaderboard(ctx, x=10):
 
     total = sorted(total, reverse=True)
 
-    em = discord.Embed(title=f"Top {x} best guessers this week!", color=discord.Color(0xF20000))
+    em = discord.Embed(
+        title=f"Top {x} best guessers this week!", color=discord.Color(0xF20000))
 
     index = 1
 
@@ -120,20 +124,21 @@ async def leaderboard(ctx, x=10):
     await ctx.respond(embed=em)
 
 
-@bot.slash_command(guild_ids = allowedServers)
+@bot.slash_command(guild_ids=allowedServers)
 async def clear_stats(ctx):
     """
     Display weekly results and clear stats.
     ctx parameter unused... wat do?
     """
-    #ikaun - it freaks out if ctx is not there so i think its best to just add it without actually using it? idk works for me
+    # ikaun - it freaks out if ctx is not there so i think its best to just add it without actually using it? idk works for me
     """
     :param ctx:
     :return:
     """
-    #channel_id = 600400648969650186  # NetflixAndChill
-    channel_id = 430333455566503940 #ikauns testing channel, insert your own ( ͡° ͜ʖ ͡°)
-    channel = bot.get_channel(channel_id)  
+    # channel_id = 600400648969650186  # NetflixAndChill
+    # ikauns testing channel, insert your own ( ͡° ͜ʖ ͡°)
+    channel_id = 430333455566503940
+    channel = bot.get_channel(channel_id)
     await ctx.respond("Week over! Here are the final results for this week!")
     x = 10
     users = await load_stats()
@@ -147,7 +152,8 @@ async def clear_stats(ctx):
 
     total = sorted(total, reverse=True)
 
-    em = discord.Embed(title=f"{x} best guessers!", color=discord.Color(0xF20000))
+    em = discord.Embed(title=f"{x} best guessers!",
+                       color=discord.Color(0xF20000))
     index = 1
     for amt in total:
         id_ = leader_board[amt]
@@ -221,4 +227,4 @@ async def save_stats(users):
         json.dump(users, f)
 
 
-bot.run("youthought.ogg") # insert your own bot token ( ͡° ͜ʖ ͡°)
+bot.run(os.getenv('BOT_TOKEN'))  # insert your own bot token ( ͡° ͜ʖ ͡°)
