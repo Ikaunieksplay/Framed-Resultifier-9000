@@ -1,20 +1,22 @@
 import discord
+from discord.ext import commands
 import json
 import os
 import asyncio
 from discord.ext import commands, tasks
 from datetime import datetime
 
-os.chdir("")  # insert your own ( ͡° ͜ʖ ͡°)
+os.chdir("") # insert your own, full path to folder where bot is ( ͡° ͜ʖ ͡°)
 
 # Create Bot object, use > as command prefix in channel.
+# TODO slash commands
 client = commands.Bot(command_prefix=">")
 
 # list of channels bot will react to (copy channel ids and add it)
 # add this to use:
 # if !(message.channel.id in allowedChannels):
 #   return
-allowedChannels = [600400648969650186]  # Currently NetflixAndChill
+allowedChannels = [600400648969650186, 430333455566503940]  # Currently NetflixAndChill and Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
 
 
 @client.event
@@ -58,12 +60,12 @@ async def balance(ctx):
     
     points_amt = users[str(user.id)]["points"]
 
-    em = discord.Embed(title=f"{ctx.author.name}'s stats")
+    em = discord.Embed(title=f"{ctx.author.name}'s stats", color=discord.Color(0xF20000))
     em.add_field(name="Points this week", value=points_amt)
     await ctx.send(embed=em)
 
-
-@client.command()
+    
+@client.command() #test command please ignore
 async def beg(ctx):
     await join_game(ctx.author)
     user = ctx.author
@@ -82,6 +84,7 @@ async def beg(ctx):
 async def leaderboard(ctx, x=10):
     """
     Create leaderboard and create embedded text to display it.
+    TODO Add a thing that replaces the leaderboard with some text if no one has scored yet? Getting something like https://imgur.com/YVUZbur is just silly
     :param ctx:
     :param x: Number of leaders to display
     :return:
@@ -97,7 +100,7 @@ async def leaderboard(ctx, x=10):
 
     total = sorted(total, reverse=True)
 
-    em = discord.Embed(title=f"{x} best guessers this week!", color=discord.Color(0xfa43ee))
+    em = discord.Embed(title=f"{x} best guessers this week!", color=discord.Color(0xF20000))
 
     index = 1
 
@@ -115,15 +118,19 @@ async def leaderboard(ctx, x=10):
 
 
 @client.command()
-async def clear_stats():
+async def clear_stats(ctx):
     """
     Display weekly results and clear stats.
-    TODO ctx parameter unused... wat do?
-    :param
+    ctx parameter unused... wat do?
+    """
+    #ikaun - it freaks out if ctx is not there so i think its best to just add it without actually using it? idk works for me
+    """
+    :param ctx:
     :return:
     """
-    channel_id = 600400648969650186  # NetflixAndChill
-    channel = client.get_channel(channel_id)  # insert your own ( ͡° ͜ʖ ͡°)
+    #channel_id = 600400648969650186  # NetflixAndChill
+    channel_id = 430333455566503940 #ikauns testing channel, insert your own ( ͡° ͜ʖ ͡°)
+    channel = client.get_channel(channel_id)  
     await channel.send("Week over! Here are the final results for this week!")
     x = 10
     users = await load_stats()
@@ -137,7 +144,7 @@ async def clear_stats():
 
     total = sorted(total, reverse=True)
 
-    em = discord.Embed(title=f"{x} best guessers!", color=discord.Color(0xfa43ee))
+    em = discord.Embed(title=f"{x} best guessers!", color=discord.Color(0xF20000))
     index = 1
     for amt in total:
         id_ = leader_board[amt]
@@ -210,5 +217,4 @@ async def save_stats(users):
     with open("mainstats.json", "w") as f:
         json.dump(users, f)
 
-
-client.run("youthought.jpg")  # insert your own ( ͡° ͜ʖ ͡°)
+client.run("youthought.ogg") # insert your own bot token ( ͡° ͜ʖ ͡°)
