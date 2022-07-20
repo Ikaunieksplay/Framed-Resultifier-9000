@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext.commands import Bot
 import json
 import os
 import asyncio
@@ -8,23 +8,26 @@ from datetime import datetime
 
 os.chdir("") # insert your own, full path to folder where bot is ( ͡° ͜ʖ ͡°)
 
-# Create Bot object, use > as command prefix in channel.
-# TODO slash commands
-client = commands.Bot(command_prefix=">")
+intents = discord.Intents.all()
+
+# Create Bot object, give all intents.
+bot = discord.ext.commands.Bot(intents=intents)
 
 # list of channels bot will react to (copy channel ids and add it)
 # add this to use:
 # if !(message.channel.id in allowedChannels):
 #   return
-allowedChannels = [600400648969650186, 430333455566503940]  # Currently NetflixAndChill and Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
+allowedChannels = [430333455566503940]  # Currently Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
+
+allowedServers = [430333455566503937] # Currently Ikaun's bot testing server, insert your own ( ͡° ͜ʖ ͡°)
 
 
-@client.event
+@bot.event
 async def on_ready():
     print("Bot is ready")
 
 
-@client.event
+@bot.event
 async def on_message(message):
     # Checks if message channel ID is in list of approved channels.
     if not(message.channel.id in allowedChannels):
@@ -49,11 +52,11 @@ async def on_message(message):
 
         await save_stats(users)
 
-    await client.process_commands(message)
+    await bot.process_commands(message)
 
 
-@client.command()
-async def balance(ctx):
+@bot.slash_command(guild_ids = allowedServers, name = "stats", description = "Shows how many points you have")
+async def stats(ctx):
     await join_game(ctx.author)
     user = ctx.author
     users = await load_stats()
@@ -62,10 +65,10 @@ async def balance(ctx):
 
     em = discord.Embed(title=f"{ctx.author.name}'s stats", color=discord.Color(0xF20000))
     em.add_field(name="Points this week", value=points_amt)
-    await ctx.send(embed=em)
+    await ctx.respond(embed=em)
 
     
-@client.command() #test command please ignore
+@bot.slash_command(guild_ids = allowedServers, description = "test command please ignore") #test command please ignore
 async def beg(ctx):
     await join_game(ctx.author)
     user = ctx.author
@@ -73,14 +76,14 @@ async def beg(ctx):
     
     earnings = int(50)
 
-    await ctx.send(f"50 points added!")
+    await ctx.respond(f"50 points added!")
 
     users[str(user.id)]["points"] += earnings
     
     await save_stats(users)
 
 
-@client.command(aliases=["lb"])
+@bot.slash_command(guild_ids = allowedServers, name = "leaderboard", description = "See the current Top 10 guessers")
 async def leaderboard(ctx, x=10):
     """
     Create leaderboard and create embedded text to display it.
@@ -100,13 +103,13 @@ async def leaderboard(ctx, x=10):
 
     total = sorted(total, reverse=True)
 
-    em = discord.Embed(title=f"{x} best guessers this week!", color=discord.Color(0xF20000))
+    em = discord.Embed(title=f"Top {x} best guessers this week!", color=discord.Color(0xF20000))
 
     index = 1
 
     for amt in total:
         id_ = leader_board[amt]
-        member = await client.fetch_user(id_)
+        member = await bot.fetch_user(id_)
         name = member.name
         em.add_field(name=f"{index}. {name}", value=f"{amt}",  inline=False)
         if index == x:
@@ -114,10 +117,10 @@ async def leaderboard(ctx, x=10):
         else:
             index += 1
 
-    await ctx.send(embed=em)
+    await ctx.respond(embed=em)
 
 
-@client.command()
+@bot.slash_command(guild_ids = allowedServers)
 async def clear_stats(ctx):
     """
     Display weekly results and clear stats.
@@ -130,8 +133,8 @@ async def clear_stats(ctx):
     """
     #channel_id = 600400648969650186  # NetflixAndChill
     channel_id = 430333455566503940 #ikauns testing channel, insert your own ( ͡° ͜ʖ ͡°)
-    channel = client.get_channel(channel_id)  
-    await channel.send("Week over! Here are the final results for this week!")
+    channel = bot.get_channel(channel_id)  
+    await ctx.respond("Week over! Here are the final results for this week!")
     x = 10
     users = await load_stats()
     leader_board = {}
@@ -148,7 +151,7 @@ async def clear_stats(ctx):
     index = 1
     for amt in total:
         id_ = leader_board[amt]
-        member = await client.fetch_user(id_)
+        member = await bot.fetch_user(id_)
         name = member.name
         em.add_field(name=f"{index}. {name}", value=f"{amt}",  inline=False)
         if index == x:
@@ -217,4 +220,5 @@ async def save_stats(users):
     with open("mainstats.json", "w") as f:
         json.dump(users, f)
 
-client.run("youthought.ogg") # insert your own bot token ( ͡° ͜ʖ ͡°)
+
+bot.run("youthought.ogg") # insert your own bot token ( ͡° ͜ʖ ͡°)
