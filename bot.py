@@ -82,6 +82,10 @@ async def beg(ctx):
     
     await save_stats(users)
 
+class player:
+    def __init__(self, id, points):
+        self.id = id
+        self.points = points
 
 @bot.slash_command(guild_ids = allowedServers, name = "leaderboard", description = "See the current Top 10 guessers")
 async def leaderboard(ctx, x=10):
@@ -93,29 +97,23 @@ async def leaderboard(ctx, x=10):
     :return:
     """
     users = await load_stats()
-    leader_board = {}
-    total = []
+    leaderboard= []
     for user in users:
-        name = int(user)
-        total_amount = users[user]["points"]
-        leader_board[total_amount] = name
-        total.append(total_amount)
-
-    total = sorted(total, reverse=True)
-
-    em = discord.Embed(title=f"Top {x} best guessers this week!", color=discord.Color(0xF20000))
-
+        newPlayer = player(int(user), users[user]['points'])
+        leaderboard.append(newPlayer)
+    
+    leaderboard = sorted(leaderboard, key=lambda k: k.points, reverse=True)
+    em = discord.Embed(title=f"{x} best guessers!", color=discord.Color(0xF20000))
+    
     index = 1
-
-    for amt in total:
-        id_ = leader_board[amt]
-        member = await bot.fetch_user(id_)
+    for user in leaderboard:
+        member = await bot.fetch_user(user.id)
         name = member.name
-        em.add_field(name=f"{index}. {name}", value=f"{amt}",  inline=False)
+        points = user.points
+        em.add_field(name=f"{index}. {name}", value=f"{points}",  inline=False)
         if index == x:
             break
-        else:
-            index += 1
+        index += 1
 
     await ctx.respond(embed=em)
 
