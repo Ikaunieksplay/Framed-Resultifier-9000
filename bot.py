@@ -16,11 +16,11 @@ bot = discord.ext.commands.Bot(intents=intents, command_prefix="/")
 # add this to use:
 # if !(message.channel.id in allowedChannels):
 #   return
-# Currently Ikaun's bot testing server general, insert your own ( ͡° ͜ʖ ͡°)
-allowedChannels = [430333455566503940]
+# Currently #netflix-n-chill, insert your own ( ͡° ͜ʖ ͡°)
+allowedChannels = [600400648969650186]
 
-# Currently Ikaun's bot testing server, insert your own ( ͡° ͜ʖ ͡°)
-allowedServers = [430333455566503937]
+# Currently bardaks, insert your own ( ͡° ͜ʖ ͡°)
+allowedServers = [568517834498637836]
 
 
 @bot.event
@@ -126,9 +126,9 @@ async def clear_stats(ctx):
     :param ctx: Discord info variable (I think)
     :return:
     """
-    # channel_id = 600400648969650186  # NetflixAndChill
+    channel_id = 600400648969650186  # NetflixAndChill
     # ikauns testing channel, insert your own ( ͡° ͜ʖ ͡°)
-    channel_id = 430333455566503940
+    # channel_id = 430333455566503940
     channel = bot.get_channel(channel_id)
     await ctx.respond("Week over! Here are the final results for this week!")
     x = 10
@@ -155,8 +155,13 @@ async def task():
     Runs clear_stats() once a week on Monday.
     :return:
     """
+    channel_id = 600400648969650186  # NetflixAndChill
+    channel = bot.get_channel(channel_id)
     if datetime.now().day == 0 and datetime.now().hour == 0:
         await clear_stats()
+    else:
+        await channel.send("tick <@300188652884197376>")
+        print("Tick")
 
 
 async def join_game(user, users):
