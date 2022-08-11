@@ -49,7 +49,32 @@ async def on_message(message):
 
         # Display score, increment points for user
         users[str(current_user.id)]["points"] += score
-        await message.add_reaction("👍")
+        
+        match score:
+            case 7:
+                await message.add_reaction("👍")
+                await message.add_reaction("7️⃣")
+            case 6:
+                await message.add_reaction("👍")
+                await message.add_reaction("6️⃣")
+            case 5:
+                await message.add_reaction("👍")
+                await message.add_reaction("5️⃣")
+            case 4:
+                await message.add_reaction("👍")
+                await message.add_reaction("4️⃣")
+            case 3:
+                await message.add_reaction("👍")
+                await message.add_reaction("3️⃣")
+            case 2:
+                await message.add_reaction("👍")
+                await message.add_reaction("2️⃣")
+            case 1:
+                await message.add_reaction("👍")
+                await message.add_reaction("1️⃣")
+            case _:
+                await message.reply("what")
+        """
         if score == 7:
             await message.add_reaction("7️⃣")
         elif score == 6:
@@ -66,6 +91,7 @@ async def on_message(message):
             await message.add_reaction("1️⃣")
         else:
             await message.reply("what")
+        """
         await save_stats(users)
 
     await bot.process_commands(message)
