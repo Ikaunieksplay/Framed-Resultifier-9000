@@ -34,7 +34,7 @@ async def on_message(message):
     if not(message.channel.id in allowedChannels):
         return
 
-    if "🎥" in message.content:
+    if "🎥" and "Framed #" in message.content:
         # Get score from current message.
         not_score = message.content.count("🟥")
         score = 7 - not_score
@@ -49,8 +49,23 @@ async def on_message(message):
 
         # Display score, increment points for user
         users[str(current_user.id)]["points"] += score
-        await message.reply(f"Score detected! {score} points added to {current_user}")
-
+        await message.add_reaction("👍")
+        if score == 7:
+            await message.add_reaction("7️⃣")
+        elif score == 6:
+            await message.add_reaction("6️⃣")
+        elif score == 5:
+            await message.add_reaction("5️⃣")
+        elif score == 4:
+            await message.add_reaction("4️⃣")
+        elif score == 3:
+            await message.add_reaction("3️⃣")
+        elif score == 2:
+            await message.add_reaction("2️⃣")
+        elif score == 1:
+            await message.add_reaction("1️⃣")
+        else:
+            await message.reply("what")
         await save_stats(users)
 
     await bot.process_commands(message)
